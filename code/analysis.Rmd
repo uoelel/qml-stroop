@@ -61,3 +61,33 @@ stroop_clean %>%
   scale_color_brewer(type = "qual")
 ```
 
+```{r}
+stroop_clean %>%
+  drop_na(first_lang) %>%
+  ggplot(aes(condition1, RT)) +
+  geom_jitter(aes(colour = condition1), width = 0.2, alpha = 0.3) +
+  stat_summary(geom = "point", fun = "median") +
+  scale_color_brewer(type = "qual") +
+  facet_grid(cols = vars(first_lang))
+```
+
+
+```{r}
+stroop_clean %>%
+  drop_na(first_lang) %>%
+  ggplot(aes(condition1, log(RT))) +
+  geom_jitter(aes(colour = condition1), width = 0.2, alpha = 0.3) +
+  stat_summary(geom = "point", fun = "median") +
+  scale_color_brewer(type = "qual") +
+  facet_grid(cols = vars(first_lang))
+```
+
+```{r}
+stroop_clean %>%
+  drop_na(first_lang) %>%
+  ggplot(aes(condition1, fill = as.factor(correct))) +
+  geom_bar(position = "fill") +
+  scale_fill_brewer(type = "qual") +
+  facet_grid(cols = vars(first_lang))
+```
+
