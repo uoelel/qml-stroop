@@ -1,0 +1,63 @@
+---
+title: "Analysis"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = here::here())
+library(tidyverse)
+theme_set(theme_light())
+library(brms)
+```
+
+## Reading data
+
+```{r}
+files <- list.files("data/stroop", full.names = TRUE)
+
+stroop <- read_csv(files, skip = 2, id = "path")
+```
+
+```{r}
+stroop_clean <- stroop %>%
+  filter(type == "test")
+
+stroop_form <- stroop %>%
+  filter(type == "form")
+```
+
+```{r}
+stroop_form <- stroop_form %>%
+  select(path, question, response) %>%
+  pivot_wider(names_from = question, values_from = response)
+
+stroop_clean <- left_join(stroop_clean, stroop_form) %>%
+  mutate(
+    proficiency = as.numeric(proficiency)
+  )
+```
+
+## Plotting
+
+```{r}
+stroop_clean %>%
+  ggplot(aes(proficiency)) +
+  geom_density() +
+  geom_rug()
+```
+
+```{r}
+stroop_clean %>%
+  ggplot(aes(first_lang)) +
+  geom_bar()
+```
+
+```{r}
+stroop_clean %>%
+  ggplot(aes(first_lang, RT, colour = first_lang)) +
+  geom_jitter(width = 0.2, alpha = 0.3) +
+  scale_color_brewer(type = "qual")
+```
+
